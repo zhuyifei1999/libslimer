@@ -112,17 +112,17 @@ class Logger {
 	error( message, component ) { this.logmsg( message, this.ERROR, component ); }
 	crit( message, component ) { this.logmsg( message, this.CRIT, component ); }
 	getLogger( component, verbosity ) {
-		var name = '';
+		var newname = '';
 		if ( this.name.length && component.length ) {
-			name = `${this.name}.${component}`;
+			newname = `${this.name}.${component}`;
 		} else if ( this.name.length || component.length ) {
-			name = `${this.name}${component}`;
+			newname = `${this.name}${component}`;
 		}
 
-		if ( loggerRegistry.has( name ) ) {
-			return loggerRegistry.get( name );
+		if ( loggerRegistry.has( newname ) ) {
+			return loggerRegistry.get( newname );
 		}
-		return new Logger( name, verbosity );
+		return new Logger( newname, verbosity );
 	}
 }
 
