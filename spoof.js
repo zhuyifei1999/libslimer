@@ -29,10 +29,7 @@ exports.init = function ( page ) {
 	var ua = page.settings.userAgent,
 		firefoxVersion = ua.match( /rv:([0-9.]+)/ )[ 1 ];
 	page.settings.userAgent = ua.replace( /SlimerJS\/.+/, 'Firefox/' + firefoxVersion );
-	Cc[ '@mozilla.org/preferences-service;1' ]
-		.getService( Ci.nsIPrefService )
-		.getBranch( 'general.useragent.' )
-		.setCharPref( 'override', page.settings.userAgent );
+	Services.prefs.setCharPref( 'general.useragent.override', page.settings.userAgent );
 	logging.info( `User agent changed from '${ua}' to '${page.settings.userAgent}'` );
 
 	Cc[ '@mozilla.org/categorymanager;1' ]
