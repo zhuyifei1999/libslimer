@@ -111,7 +111,7 @@ events.onInitialized( function () {
 } );
 
 module.exports = {
-	registerModule( name, f, d, load = true ) {
+	registerModule( name, f, d = {}, load = true ) {
 		if ( loadedModules.includes( name ) ) {
 			throw new Error( `Duplicate definition for module '${name}'` );
 		}
@@ -137,7 +137,7 @@ module.exports = {
 
 		return this;
 	},
-	prepEval( f, d ) {
+	prepEval( f, d = {} ) {
 		f = typeof f === 'string' ? f : loader.normalizeFunction( f, d );
 		return loader.prepEval( f );
 	}
