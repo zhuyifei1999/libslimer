@@ -34,7 +34,7 @@ exports.init = function ( page ) {
 
 	Cc[ '@mozilla.org/categorymanager;1' ]
 		.getService( Ci.nsICategoryManager )
-		.deleteCategoryEntry( 'JavaScript-global-property', 'callPhantom', true );
+		.deleteCategoryEntry( 'JavaScript-global-property', 'callPhantom', false );
 	logging.info( 'Ensured global callPhantom is not defined' );
 
 	for ( let cb of [ 'onAlert', 'onAuthPrompt', 'onConfirm', 'onFilePicker', 'onPrompt' ] ) {

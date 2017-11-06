@@ -1,7 +1,6 @@
-const GUEST_CM_TOKEN = Math.random().toString( 36 ).substr( 2 ),
-	events = require( './events.js' ),
-	logging = require( './logging.js' ).getLogger( 'guestlog' ),
-	guest = require( './guest.js' );
+const events = require( '../events.js' ),
+	guest = require( '../guest.js' ),
+	logging = require( '../logging.js' ).getLogger( 'guest.logging' );
 
 guest.registerModule( 'logging', function () {
 	var getLogger = function ( name ) {
@@ -23,25 +22,18 @@ guest.registerModule( 'logging', function () {
 						};
 					default:
 						return function ( ...args ) {
-							console.log( GUEST_CM_TOKEN + JSON.stringify( { logger: name, func: key, args: args } ) );
+							return require( 'callPhantom.js' )( [ 'logging', { logger: name, func: key, args: args } ] );
 						};
 				}
 			}
 		} );
 	};
 	module.exports = getLogger( '' );
-}, {
-	GUEST_CM_TOKEN: JSON.stringify( GUEST_CM_TOKEN )
-} );
+}, undefined, false );
 
-events.onConsoleMessage( function ( msg ) {
-	try {
-		if ( msg.startsWith( GUEST_CM_TOKEN ) ) {
-			msg = JSON.parse( msg.substr( GUEST_CM_TOKEN.length ) );
-			logging.getLogger( msg.logger )[ msg.func ]( ...msg.args );
-			this.continuing = false;
-		}
-	} catch ( e ) {
-		logging.error( e );
+events.onCallback( function ( [ type, msg ] ) {
+	if ( type === 'logging' ) {
+		this.continuing = false;
+		return logging.getLogger( msg.logger )[ msg.func ]( ...msg.args );
 	}
 } );

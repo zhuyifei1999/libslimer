@@ -1,4 +1,4 @@
-const GUEST_REGISTRY_NAME = Math.random().toString( 36 ).substr( 2 ),
+const GUEST_REGISTRY_NAME = require( './util.js' ).randomStr(),
 	fs = require( 'fs' ),
 	events = require( './events.js' ),
 	logging = require( './logging.js' ).getLogger( 'guest' ),
@@ -78,10 +78,17 @@ const GUEST_REGISTRY_NAME = Math.random().toString( 36 ).substr( 2 ),
 			return loaderFunc;
 		},
 		getDependencies( src ) {
-			return src.match( /require\s*\(\s*['"](?:[^'"]+\/)?([^'"]+?)(?:\.js)?['"]\s*\)/g ) || [];
+			return Array.from( function* () {
+				var regex = /require\s*\(\s*['"](?:[^'"]+\/)?([^'"]+?)(?:\.js)?['"]\s*\)/g;
+				while ( true ) {
+					let match = regex.exec( src );
+					if ( !match ) {	break; }
+					yield match[ 1 ];
+				}
+			}() );
 		},
 		registerModule( name, src ) {
-			dependencies.set( name, this.getDependencies( src ) );
+			dependencies.set( name, Array.from( this.getDependencies( src ) ) );
 			modules.set( name, this.buildLoader( name, src ) );
 		},
 		prepEval( src ) {
@@ -104,7 +111,8 @@ events.onInitialized( function () {
 	this.page.evaluate( function ( GUEST_REGISTRY_NAME ) {
 		window[ GUEST_REGISTRY_NAME ] = {};
 	}, GUEST_REGISTRY_NAME );
-	for ( let [ name, src ] of Array.from( modules.entries() ).reverse() ) {
+	for ( let name of loadedModules ) {
+		let src = modules.get( name );
 		this.page.evaluate( src );
 		logging.debug( `Module '${name}' injected` );
 	}
@@ -112,7 +120,7 @@ events.onInitialized( function () {
 
 module.exports = {
 	registerModule( name, f, d = {}, load = true ) {
-		if ( loadedModules.includes( name ) ) {
+		if ( modules.has( name ) ) {
 			throw new Error( `Duplicate definition for module '${name}'` );
 		}
 		loader.registerModule( name, loader.normalizeFunction( f, d ) + '()' );
@@ -126,7 +134,12 @@ module.exports = {
 		if ( !modules.has( name ) ) {
 			let uri = fs.join( fs.directory( module.id ), 'guest', `${name}.js` );
 			if ( fs.exists( uri ) ) {
-				loader.registerModule( name, fs.read( uri ) );
+				let src = fs.read( uri );
+				if ( loader.getDependencies( src ).includes( 'guest' ) ) {
+					require( `./guest/${name}.js` );
+				} else {
+					loader.registerModule( name, src );
+				}
 			} else {
 				throw new Error( `Unknown module '${name}'` );
 			}
@@ -134,6 +147,7 @@ module.exports = {
 		for ( let dependency of dependencies.get( name ) ) {
 			this.loadModule( dependency );
 		}
+		loadedModules.push( name );
 
 		return this;
 	},
