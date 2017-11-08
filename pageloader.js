@@ -1,5 +1,5 @@
 const events = require( './events.js' ),
-	logging = require( './logging.js' ),
+	logging = require( './logging.js' ).getLogger( 'pageloader' ),
 	util = require( './util.js' );
 var loadPromise,
 	deferredLoad = {
@@ -14,14 +14,17 @@ var loadPromise,
 events.onLoadFinished( function ( status, url, isFrame ) {
 	if ( isFrame ) { return; }
 	if ( status !== 'success' ) {
+		logging.info( `Loading '${url}' failed` );
 		setTimeout( () => deferredLoad.reject( new Error( 'Unable to load the address' ) ), 1000 );
 	} else {
+		logging.info( `Loading '${url}' succeeded` );
 		deferredLoad.resolve( url );
 	}
 } );
 
 events.onLoadStarted( function ( url, isFrame ) {
 	if ( isFrame ) { return; }
+	logging.debug( `Loading '${url}' started` );
 	deferredWait.resolve();
 } );
 
