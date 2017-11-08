@@ -96,7 +96,7 @@ const GUEST_REGISTRY_NAME = require( './util.js' ).randomStr(),
 				evalFunc = this.normalizeFunction( /* FUNC_SRC, REQUIRE */ function ( ...args ) {
 					/* eslint-disable no-undef, no-unused-vars */
 					return ( function ( require, args ) {
-						( FUNC_SRC )( ...args );
+						return ( FUNC_SRC )( ...args );
 					}( REQUIRE, args ) );
 					/* eslint-enable no-undef, no-unused-vars */
 				}, {
@@ -129,25 +129,27 @@ module.exports = {
 		}
 		return this;
 	},
-	loadModule( name ) {
-		if ( loadedModules.includes( name ) ) { return; }
-		if ( !modules.has( name ) ) {
-			let uri = fs.join( fs.directory( module.id ), 'guest', `${name}.js` );
-			if ( fs.exists( uri ) ) {
-				let src = fs.read( uri );
-				if ( loader.getDependencies( src ).includes( 'guest' ) ) {
-					require( `./guest/${name}.js` );
+	loadModule( ...names ) {
+		for ( let name of names ) {
+			if ( loadedModules.includes( name ) ) { return; }
+			if ( !modules.has( name ) ) {
+				let uri = fs.join( fs.directory( module.id ), 'guest', `${name}.js` );
+				if ( fs.exists( uri ) ) {
+					let src = fs.read( uri );
+					if ( loader.getDependencies( src ).includes( 'guest' ) ) {
+						require( `./guest/${name}.js` );
+					} else {
+						loader.registerModule( name, src );
+					}
 				} else {
-					loader.registerModule( name, src );
+					throw new Error( `Unknown module '${name}'` );
 				}
-			} else {
-				throw new Error( `Unknown module '${name}'` );
 			}
+			for ( let dependency of dependencies.get( name ) ) {
+				this.loadModule( dependency );
+			}
+			loadedModules.push( name );
 		}
-		for ( let dependency of dependencies.get( name ) ) {
-			this.loadModule( dependency );
-		}
-		loadedModules.push( name );
 
 		return this;
 	},
