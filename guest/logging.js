@@ -40,6 +40,6 @@ events.onCallback( function ( val ) {
 	}
 	if ( type === 'logging' ) {
 		this.continuing = false;
-		return logging.getLogger( msg.logger )[ msg.func ]( ...msg.args );
+		this.setReturnVal( logging.getLogger( msg.logger )[ msg.func ]( ...msg.args ) );
 	}
 } );

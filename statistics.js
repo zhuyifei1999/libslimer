@@ -11,5 +11,14 @@ module.exports = {
 	},
 	stddev( l ) {
 		return Math.sqrt( this.variance( l ) );
+	},
+	randomBoxMuller() {
+		// https://en.wikipedia.org/wiki/Box%E2%80%93Muller_transform
+		var u = 0, v = 0, r, theta;
+		while ( u === 0 ) { u = Math.random(); }
+		while ( v === 0 ) { v = Math.random(); }
+		r = Math.sqrt( -2.0 * Math.log( u ) );
+		theta = 2.0 * Math.PI * v;
+		return [ r * Math.cos( theta ), r * Math.sin( theta ) ];
 	}
 };

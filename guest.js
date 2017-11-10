@@ -131,7 +131,7 @@ module.exports = {
 	},
 	loadModule( ...names ) {
 		for ( let name of names ) {
-			if ( loadedModules.includes( name ) ) { return; }
+			if ( loadedModules.includes( name ) ) { return this; }
 			if ( !modules.has( name ) ) {
 				let uri = fs.join( fs.directory( module.id ), 'guest', `${name}.js` );
 				if ( fs.exists( uri ) ) {
