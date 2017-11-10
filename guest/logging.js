@@ -31,7 +31,13 @@ guest.registerModule( 'logging', function () {
 	module.exports = getLogger( '' );
 }, undefined, false );
 
-events.onCallback( function ( [ type, msg ] ) {
+events.onCallback( function ( val ) {
+	var type, msg;
+	try {
+		[ type, msg ] = val;
+	} catch ( e ) {
+		return;
+	}
 	if ( type === 'logging' ) {
 		this.continuing = false;
 		return logging.getLogger( msg.logger )[ msg.func ]( ...msg.args );
