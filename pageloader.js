@@ -53,7 +53,7 @@ loadPromise = function ( loader, requireload ) {
 	} );
 };
 
-exports.load = async function ( loader, checker, requireload = true ) {
+exports.load = async function ( loader, checker = util.noop, requireload = true ) {
 	deferredLoad.reject( new Error( 'Superseded' ) );
 	while ( true ) {
 		let data = await loadPromise( loader, requireload );
