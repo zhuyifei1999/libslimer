@@ -30,9 +30,10 @@ events.onLoadStarted( function ( url, isFrame ) {
 
 loadPromise = function ( loader, requireload ) {
 	return new Promise( ( resolve, reject ) => {
-		new Promise( ( waitresolve, waitreject ) => {
-			deferredWait.resolve = waitresolve;
-			deferredWait.reject = waitreject;
+		var /* waitresolve, */ waitreject;
+		new Promise( ( resolve, reject ) => {
+			deferredWait.resolve = /* waitresolve = */ resolve;
+			deferredWait.reject = waitreject = reject;
 		} ).catch( function ( e ) {
 			if ( requireload ) {
 				reject( e );
@@ -45,7 +46,7 @@ loadPromise = function ( loader, requireload ) {
 
 		Promise.resolve( loader() ).then( function () {
 			if ( requireload !== null ) {
-				setTimeout( () => deferredWait.reject( new Error( 'Timeout waiting for loading to start' ) ), 500 );
+				setTimeout( () => waitreject( new Error( 'Timeout waiting for loading to start' ) ), 500 );
 			}
 		}, function ( e ) {
 			reject( e );
