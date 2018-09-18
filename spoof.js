@@ -13,7 +13,7 @@ function syncWaitPromise( promise ) {
 
 	// eslint-disable-next-line no-unmodified-loop-condition
 	while ( result === null ) {
-		// processNextEvent is evil
+		// XXX: processNextEvent is evil
 		Services.tm.currentThread.processNextEvent( true );
 	}
 

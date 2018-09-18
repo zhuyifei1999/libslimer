@@ -31,8 +31,14 @@ module.exports = {
 		switch ( url.protocol ) {
 			case 'data:':
 			case 'blob:': {
-				// TODO: Use URL.isValidURL('blob:...')?
-				// let req = await fetch( url.href );
+				// TODO: Use URL.isValidURL( 'blob:...' )?
+				// HACK: The reason this is executed in a sandbox with SystemPrincipal
+				// is that we are in a node context here with an origin of 'about:blank';
+				// Same Origin Policy applies. Other than this sandbox method, We can
+				// use nsIXMLHttpRequest which is no longer supported on newer Gecko,
+				// or sdk/net/xhr which does not support some of the newer interfaces;
+				// besides, we'd need a polyfill to get this awesome Promise-based
+				// interface of fetch().
 				let req = await Cu.evalInSandbox( `fetch( ${JSON.stringify( url.href )} )`, systemSandbox );
 				return await req.blob();
 			}
