@@ -8,7 +8,7 @@ function rand( v ) {
 
 module.exports = {
 	async mouseclick( page, x, y, type = 'click' ) {
-		logging.info( `Mouse click {x:${x}, y:${y}}` );
+		logging.debug( `Mouse ${type} {x:${x}, y:${y}}` );
 		await util.wait( rand( 500 ) );
 		page.sendEvent( 'mousemove', x, y );
 		await util.wait( rand( 50 ) );
@@ -28,7 +28,7 @@ module.exports = {
 			return Math.atan2( y, x );
 		}
 
-		logging.info( `Mouse drag {i:{x:${ix}, y:${iy}, f:{x:${fx}, y:${fy}}}` );
+		logging.debug( `Mouse drag {i:{x:${ix}, y:${iy}, f:{x:${fx}, y:${fy}}}` );
 		await util.wait( rand( 500 ) );
 		let [ fd, randtheta ] = rtheta( ix, iy ),
 			[ x, y ] = [ ix, iy ];
@@ -67,9 +67,9 @@ module.exports = {
 	},
 	async typetext( page, text ) {
 		if ( typeof text[ Symbol.iterator ] === 'function' ) {
-			logging.info( `Type '${text}'` );
+			logging.debug( `Type '${text}'` );
 		} else {
-			logging.info( `Type ${text}` );
+			logging.debug( `Type ${text}` );
 			text = [ text ];
 		}
 		await util.wait( rand( 500 ) );

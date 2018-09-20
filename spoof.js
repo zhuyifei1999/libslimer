@@ -30,17 +30,17 @@ exports.init = function ( page ) {
 		firefoxVersion = ua.match( /rv:([0-9.]+)/ )[ 1 ];
 	page.settings.userAgent = ua.replace( /SlimerJS\/.+/, 'Firefox/' + firefoxVersion );
 	Services.prefs.setCharPref( 'general.useragent.override', page.settings.userAgent );
-	logging.info( `User agent changed from '${ua}' to '${page.settings.userAgent}'` );
+	logging.debug( `User agent changed from '${ua}' to '${page.settings.userAgent}'` );
 
 	Cc[ '@mozilla.org/categorymanager;1' ]
 		.getService( Ci.nsICategoryManager )
 		.deleteCategoryEntry( 'JavaScript-global-property', 'callPhantom', false );
-	logging.info( 'Ensured global callPhantom is not defined' );
+	logging.debug( 'Ensured global callPhantom is not defined' );
 
 	for ( let cb of [ 'onAlert', 'onAuthPrompt', 'onConfirm', 'onFilePicker', 'onPrompt' ] ) {
 		events[ cb ]( function () {
 			var length = 1000;
-			logging.info( `Synchronous wait ${length} ms`, cb );
+			logging.debug( `Synchronous wait ${length} ms`, cb );
 			syncWaitPromise( util.wait( length ) );
 		} );
 	}
