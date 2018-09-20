@@ -51,16 +51,21 @@ module.exports = {
 			}
 		}
 	},
-	blob2text( blob ) {
+	readBlob( blob, type = 'BinaryString' ) {
+		// type =
+		// ArrayBuffer
+		// BinaryString
+		// DataURL
+		// Text
 		return new Promise( ( resolve, reject ) => {
 			var reader = new FileReader();
 			reader.onloadend = function () {
 				resolve( reader.result );
 			};
 			reader.onerror = function ( e ) {
-				reject( e || new Error( 'blob2text failed' ) );
+				reject( e || new Error( 'readBlob failed' ) );
 			};
-			reader.readAsBinaryString( blob );
+			reader[ 'readAs' + type ]( blob );
 		} );
 	}
 };
