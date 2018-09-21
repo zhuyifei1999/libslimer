@@ -1,5 +1,5 @@
 const events = require( './events.js' ),
-	logging = require( './logging.js' ).getLogger( 'spoof' ),
+	logging = require( './logging.js' ).getLogger( 'libslimer.spoof' ),
 	util = require( './util.js' ),
 	{ Cc, Ci, Cu } = require( 'chrome' ),
 	Services = Cu.import( 'resource://gre/modules/Services.jsm', {} ).Services;

@@ -1,5 +1,5 @@
 const events = require( './events.js' ),
-	logging = require( './logging.js' ).getLogger( 'robots' ),
+	logging = require( './logging.js' ).getLogger( 'libslimer.robots' ),
 	util = require( './util.js' ),
 	XMLHttpRequest = require( 'sdk/net/xhr' ).XMLHttpRequest,
 	robotsCache = new Map();

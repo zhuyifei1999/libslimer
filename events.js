@@ -1,4 +1,4 @@
-const logging = require( './logging.js' ).getLogger( 'events' ),
+const logging = require( './logging.js' ).getLogger( 'libslimer.events' ),
 	eventReg = {},
 	events = [
 		'onAlert',

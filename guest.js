@@ -1,7 +1,7 @@
 const GUEST_REGISTRY_NAME = require( './util.js' ).randomStr(),
 	fs = require( 'fs' ),
 	events = require( './events.js' ),
-	logging = require( './logging.js' ).getLogger( 'guest' ),
+	logging = require( './logging.js' ).getLogger( 'libslimer.guest' ),
 	util = require( './util.js' ),
 	dependencies = new Map(),
 	modules = new Map(),

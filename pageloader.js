@@ -1,5 +1,5 @@
 const events = require( './events.js' ),
-	logging = require( './logging.js' ).getLogger( 'pageloader' ),
+	logging = require( './logging.js' ).getLogger( 'libslimer.pageloader' ),
 	util = require( './util.js' );
 var loadPromise,
 	deferredLoad = {

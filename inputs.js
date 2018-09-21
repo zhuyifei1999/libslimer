@@ -1,4 +1,4 @@
-const logging = require( './logging.js' ).getLogger( 'inputs' ),
+const logging = require( './logging.js' ).getLogger( 'libslimer.inputs' ),
 	statistics = require( './statistics.js' ),
 	util = require( './util.js' );
 
