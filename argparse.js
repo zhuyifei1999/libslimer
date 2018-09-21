@@ -67,6 +67,9 @@ exports.parse = function ( argdef ) {
 							case 'count':
 								parsed[ index ] = ( parsed[ index ] || 0 ) + 1;
 								break;
+							case 'store_true':
+								parsed[ index ] = true;
+								break;
 							// TODO
 						}
 					} else {
@@ -95,6 +98,9 @@ exports.parse = function ( argdef ) {
 									break;
 								case 'count':
 									parsed[ index ] = ( parsed[ index ] || 0 ) + 1;
+									break;
+								case 'store_true':
+									parsed[ index ] = true;
 									break;
 								// TODO
 							}
