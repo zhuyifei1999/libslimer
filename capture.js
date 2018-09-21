@@ -6,6 +6,8 @@ const { Cc, Ci, Cu } = require( 'chrome' ),
 	captureReg = new Map(),
 	allCaptures = new Map();
 
+var doSaveAll = false;
+
 events.onResourceReceived( function ( response ) {
 	if ( !response.bodySize ) { return; }
 
@@ -13,15 +15,18 @@ events.onResourceReceived( function ( response ) {
 		if ( response.url.match( regex ) ) { handler( response ); }
 	}
 
-	allCaptures.set(
-		response.url,
-		URL.createObjectURL( new Blob( [ response.body ], { type: response.contentType } ) )
-	);
+	if ( doSaveAll ) {
+		allCaptures.set(
+			response.url,
+			URL.createObjectURL( new Blob( [ response.body ], { type: response.contentType } ) )
+		);
+	}
 } );
 
 module.exports = {
-	init( page ) {
-		page.captureContent = [ /.*/ ];
+	init( page, saveAll = false, contentRegex = [ /.*/ ] ) {
+		doSaveAll = saveAll;
+		page.captureContent = contentRegex;
 	},
 	register( regex, handler ) {
 		captureReg.set( regex, handler );
